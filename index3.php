@@ -1,12 +1,16 @@
 <?php
 require_once("connect2.php");
-
+//Get information from the gateway eg. phonenumber , and the text that was input
 $getsinput = getInput();
 $input = $getsinput['text'];
+//Get the users level according to their input
 $level = getLevel($input);
 $leveluserat = $level['level'];
+//Gets the last input of the user
 $message = $level['latest_message'];
+//Get users phonenumber
 $phoneNumber = $getsinput['phoneNumber'];
+
 
 switch ($leveluserat) {
 	case 0:
@@ -63,10 +67,10 @@ function getLevel($input){
 
 }
 
-function createStaff($message){
+function createStaff($message , $phoneNumber){
 
-  	$query = mysql_query("INSERT INTO users (username)
-  		VALUES ('$message')");
+  	$query = mysql_query("INSERT INTO users (username , phonenumber)
+  		VALUES ('$message' , '$phoneNumber')");
 
   	return $query;
 }
@@ -84,8 +88,7 @@ function getStaff($phoneNumber){
 
 }
 
-function getHomeMenu(
-	){
+function getHomeMenu(){
 	$response = "1.Register".PHP_EOL;
 	$response .= "2.Retreive Info";
 	sendOutput($response , 1);
@@ -95,7 +98,6 @@ function getMenu1($input){
 	switch($input){
 		case 1:
 			$response = "Enter your names";
-			createStaff($message);
 			break;
 		case 2:
 			$response = getStaff($phoneNumber);
@@ -109,6 +111,7 @@ function getMenu1($input){
 }
 function getMenu2(){
 	$response = getStaff($phoneNumber);
+	createStaff($message , $phoneNumber);
 	sendOutput($response , 2);
 	}
 
