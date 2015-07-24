@@ -1,13 +1,14 @@
 <?php
-incude("connect2.php");
+require_once("connect2.php");
 
 $getsinput = getInput();
 $input = $getsinput['text'];
 $level = getLevel($input);
+$leveluserat = $level['level'];
 $message = $level['latest_message'];
 $phoneNumber = $getsinput['phoneNumber'];
 
-switch ($level) {
+switch ($leveluserat) {
 	case 0:
 		getHomeMenu();
 		break;
@@ -26,8 +27,8 @@ function getInput(){
 	//Declare an array to get input from the user,
 	//assign the user a session id, get phone id, and phone no.
 	$input = array();
-	$input['sessionId']   = $_REQUEST["sessionId"];
-	$input['serviceCode'] = $_REQUEST["serviceCode"];
+	//$input['sessionId']   = $_REQUEST["sessionId"];
+	//$input['serviceCode'] = $_REQUEST["serviceCode"];
 	$input['phoneNumber'] = $_REQUEST["phoneNumber"];
 	$input['text']        = $_REQUEST["text"];
 
@@ -83,7 +84,8 @@ function getStaff($phoneNumber){
 
 }
 
-function getHomeMenu()){
+function getHomeMenu(
+	){
 	$response = "1.Register".PHP_EOL;
 	$response .= "2.Retreive Info";
 	sendOutput($response , 1);
