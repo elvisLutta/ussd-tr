@@ -1,5 +1,5 @@
 <?php
-require_once("connect2.php");
+require_once("connect.php");
 //Get information from the gateway eg. phonenumber , and the text that was input
 $getsinput = getInput();
 $input = $getsinput['text'];
@@ -9,19 +9,22 @@ $leveluserat = $level['level'];
 //Gets the last input of the user
 $message = $level['latest_message'];
 //Get users phonenumber
-$phoneNumber = $getsinput['phoneNumber'];
+$phoneNumber = "0".substr(trim($_GET["phoneNumber"]),3,9);
 
 
 switch ($leveluserat) {
 	case 0:
 		getHomeMenu();
 		break;
+
 	case 1:
 		getMenu1($message);
 		break;
+
 	case 2:
-		getMenu2();
-	
+		getMenu2($message , $phoneNumber);
+		break;
+
 	default:
 		getHomeMenu();
 		break;
@@ -94,25 +97,48 @@ function getHomeMenu(){
 	sendOutput($response , 1);
 }
 
+function getHomeMenu2(){
+
+	$phoneNumber = "0".substr(trim($_GET["phoneNumber"]),3,9);
+	$result = getStaff($phoneNumber);
+	$name = $result['name'];
+	$response = "Welcome back ".$name.". Thanks for using our service";
+	return $response;
+
+
+}
+
 function getMenu1($input){
 	switch($input){
 		case 1:
-			$response = "Enter your names";
+			$response = "Please enter your names";
 			break;
+
 		case 2:
-			$response = getStaff($phoneNumber);
-			sendOutput($response , 2);
+			$result = getStaff($phoneNumber);
+			$phonecheck = $result['phoneNumber'];
+
+			if ($phoneNumber == $phonecheck){
+				$response = getHomeMenu2();
+				sendOutput($response , 2);
+				exit();
+			}
+			$response = "Please register as you aren't in our records";
+
 			break;
+
 		default:
-			$response = getHomeMenu();
+			getHomeMenu();
 			break;
+
 	}
-		sendOutput($response , 1);
+	sendOutput($response , 1);
+
+	return $response;
 }
-function getMenu2(){
-	$response = getStaff($phoneNumber);
+function getMenu2($message , $phoneNumber){
 	createStaff($message , $phoneNumber);
-	sendOutput($response , 2);
+	sendOutput($response , 1);
 	}
 
 
